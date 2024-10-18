@@ -8,6 +8,23 @@ function getTimeString(time){
     return `${hours}hrs ${minutes} mins ${seconds} seconds ago`
 }
 
+const sort = () =>{
+    fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
+        .then(res => res.json())
+        .then(data => {
+            const videos = data.videos.map(video =>{
+                const splittedView = video.others.views.split("K")
+                const numberOfViews = parseFloat(splittedView[0])
+                // console.log(numberOfViews)
+                video.others.views = numberOfViews;
+                return video;
+            })
+            const sortedVideos = videos.sort((a,b) => b.others.views - a.others.views)
+            displayVideos(sortedVideos)
+        })
+        .catch(err => console.log("The error is: ", err))
+}
+
 const removeActiveBtn = () =>{
     const buttons = document.getElementsByClassName("category-btn");
     // console.log(buttons)
@@ -138,6 +155,8 @@ const displayCategories = (data) =>{
 document.getElementById("search-input").addEventListener("keyup", (e) =>{
     loadVideos(e.target.value)
 })
+
+
 
 loadCategories();
 loadVideos();
